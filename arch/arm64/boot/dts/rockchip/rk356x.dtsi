@@ -223,7 +223,7 @@
 	};
 
 	usbdrd30: usbdrd {
-		compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
+		compatible = "rockchip,rk3399-dwc3";
 		clocks = <&cru CLK_USB3OTG0_REF>, <&cru CLK_USB3OTG0_SUSPEND>,
 			 <&cru ACLK_USB3OTG0>, <&cru PCLK_PIPE>;
 		clock-names = "ref_clk", "suspend_clk",
@@ -554,6 +554,28 @@
 		};
 	};
 
+	ebc: ebc@fdec0000 {
+		compatible = "rockchip,rk3568-ebc-tcon";
+		reg = <0x0 0xfdec0000 0x0 0x5000>;
+		interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&cru HCLK_EBC>, <&cru DCLK_EBC>;
+		clock-names = "hclk", "dclk";
+		pinctrl-0 = <&ebc_pins>;
+		pinctrl-names = "default";
+		power-domains = <&power RK3568_PD_RGA>;
+		rockchip,grf = <&grf>;
+		status = "disabled";
+	};
+
+	eink: eink@fdf00000 {
+		compatible = "rockchip,rk3568-eink-tcon";
+		reg = <0x0 0xfdf00000 0x0 0x74>;
+		clocks = <&cru PCLK_EINK>, <&cru HCLK_EINK>;
+		clock-names = "pclk", "hclk";
+		interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
+		status = "disabled";
+	};
+
 	sdmmc2: mmc@fe000000 {
 		compatible = "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xfe000000 0x0 0x4000>;
@@ -877,6 +899,43 @@
 			     &i2s1m0_sdi2   &i2s1m0_sdi3
 			     &i2s1m0_sdo0   &i2s1m0_sdo1
 			     &i2s1m0_sdo2   &i2s1m0_sdo3>;
+		#sound-dai-cells = <0>;
+		status = "disabled";
+	};
+
+	i2s2_2ch: i2s@fe420000 {
+		compatible = "rockchip,rk3568-i2s-tdm";
+		reg = <0x0 0xfe420000 0x0 0x1000>;
+		interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&cru MCLK_I2S2_2CH>, <&cru MCLK_I2S2_2CH>, <&cru HCLK_I2S2_2CH>;
+		clock-names = "mclk_tx", "mclk_rx", "hclk";
+		dmas = <&dmac1 4>, <&dmac1 5>;
+		dma-names = "tx", "rx";
+		rockchip,cru = <&cru>;
+		rockchip,grf = <&grf>;
+		pinctrl-0 = <&i2s2m0_sclktx
+			     &i2s2m0_lrcktx
+			     &i2s2m0_sdi
+			     &i2s2m0_sdo>;
+		pinctrl-names = "default";
+		#sound-dai-cells = <0>;
+		status = "disabled";
+	};
+
+	pdm: pdm@fe440000 {
+		compatible = "rockchip,rk3568-pdm", "rockchip,pdm";
+		reg = <0x0 0xfe440000 0x0 0x1000>;
+		clocks = <&cru MCLK_PDM>, <&cru HCLK_PDM>;
+		clock-names = "pdm_clk", "pdm_hclk";
+		dmas = <&dmac1 9>;
+		dma-names = "rx";
+		pinctrl-0 = <&pdmm0_clk
+			     &pdmm0_clk1
+			     &pdmm0_sdi0
+			     &pdmm0_sdi1
+			     &pdmm0_sdi2
+			     &pdmm0_sdi3>;
+		pinctrl-names = "default";
 		#sound-dai-cells = <0>;
 		status = "disabled";
 	};
